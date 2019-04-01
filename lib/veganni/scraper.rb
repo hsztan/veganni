@@ -1,0 +1,3 @@
+class Veganni::Scraper
+
+end
