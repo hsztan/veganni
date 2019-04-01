@@ -1,7 +1,14 @@
 class Veganni::CLI
 
+  def initialize
+  end
+
   def call
-    puts "Hello World"
+    menu
+  end
+
+  def menu
+    puts "Welcome to Veggie"
   end
 
 end
