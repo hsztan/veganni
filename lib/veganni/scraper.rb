@@ -6,35 +6,39 @@ require_relative "recipe"
 
 class Scraper
   attr_accessor :path
+  BASE_PATH = "https://www.veganricha.com/"
 
   def initialize(month = "2019/02")
     @path = self.make_path(month)
-    @recepies = []
   end
 
   def scrape_main
     file = open(@path)
     doc = Nokogiri::HTML(file).css("article")
-    doc.each do |node|
+  end
+
+  def create_recipes
+    self.scrape_main.each do |node|
       name = node.css(".entry-title").text
-      description = node.css(".entry-content p").text
-      link = node.css("a.entry-title-link[href]").to_s.match(/http.+html/).to_s
+      description = node.css(".entry-content p").text.split("\u00a0").first
+      link = node.css("a.entry-title-link").attr("href").value
       #how can I get the value of href in the "a" attribute??????
+      #now I know thanks to Antonio :D
 
       recipe = Recipe.new(name, description, link)
     end
-    Recipe.all
+    !Recipe.all.empty?
   end
 
   def scrape_detail_recipe(link)
 
   end
 
+  def add_recipe_attributes
+
+  end
+
   def make_path(month)
-   "https://www.veganricha.com/" + month
+   BASE_PATH + month
   end
 end
-
-scrape = Scraper.new
-scrape.scrape_main
-binding.pry
