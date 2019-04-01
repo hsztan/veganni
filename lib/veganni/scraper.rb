@@ -1,8 +1,11 @@
-require "nokigiri"
-require "open-uri"
+require "pry"
 
-class Veganni::Scraper
-  attr_accessor :recepies, :path
+require "nokogiri"
+require "open-uri"
+require_relative "recipe"
+
+class Scraper
+  attr_accessor :path
 
   def initialize(month = "2019/02")
     @path = self.make_path(month)
@@ -12,23 +15,26 @@ class Veganni::Scraper
   def scrape_main
     file = open(@path)
     doc = Nokogiri::HTML(file).css("article")
-    doc.each do |name|
-      recepie = {}
-      recepie[:name] = name.css(".entry-title").text
-      recepie[:description] = name.css(".entry-content p").text
-      recepie[:link] = name.css("a.entry-title-link[href]").to_s.match(/http.+html/).to_s
-      self.recepies << recepie
+    doc.each do |node|
+      name = node.css(".entry-title").text
+      description = node.css(".entry-content p").text
+      link = node.css("a.entry-title-link[href]").to_s.match(/http.+html/).to_s
+      #how can I get the value of href in the "a" attribute??????
+
+      recipe = Recipe.new(name, description, link)
     end
-    !self.recepies.empty?
+    Recipe.all
   end
 
-  def scrape_detail
+  def scrape_detail_recipe(link)
 
   end
 
   def make_path(month)
    "https://www.veganricha.com/" + month
   end
-
-
 end
+
+scrape = Scraper.new
+scrape.scrape_main
+binding.pry
