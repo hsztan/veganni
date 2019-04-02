@@ -22,8 +22,6 @@ class Scraper
       name = node.css(".entry-title").text
       description = node.css(".entry-content p").text.split("\u00a0").first
       link = node.css("a.entry-title-link").attr("href").value
-      #how can I get the value of href in the "a" attribute??????
-      #now I know thanks to Antonio :D
 
       recipe = Recipe.new(name, description, link)
     end
