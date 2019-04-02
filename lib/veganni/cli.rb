@@ -6,16 +6,20 @@ class Veganni::CLI
   end
 
   def call
-    user_interface
+    self.user_interface
   end
 
   def user_interface
     puts "Welcome to Veganni. An excelente source of wonderful vegan recipes."
     puts "Information from: veganricha.com!"
     puts SEPARATOR
-    select_month
-    show_recipe_summary(select_recipe)
+    self.select_month
+    recipe = select_recipe
+    self.show_recipe_summary(recipe)
 
+  end
+
+  def recipe_full_details
   end
 
   def show_recipe_summary(recipe_number)
