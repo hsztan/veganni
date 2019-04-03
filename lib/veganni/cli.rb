@@ -13,6 +13,7 @@ class Veganni::CLI
   end
 
   def user_interface
+    inner_menu_flag = false
     puts SEPARATOR
     self.greeting
     puts SEPARATOR
@@ -23,9 +24,11 @@ class Veganni::CLI
 
     while !self.exit
       puts SEPARATOR
-      self.menu
+      inner_menu_flag ? self.inner_menu : self.menu
+      print "> ".colorize(:red)
       case input = gets.chomp.downcase
       when "main"
+        inner_menu_flag = false
         puts SEPARATOR
         self.list_month_recipes
         puts SEPARATOR
@@ -34,6 +37,7 @@ class Veganni::CLI
       when "prep"
         puts SEPARATOR
         self.show_ingredients_and_prep
+        inner_menu_flag = true
       when "exit"
         self.exit = true
       end
@@ -50,6 +54,11 @@ class Veganni::CLI
 
   def menu
     puts "Type prep to get cooking!"
+    puts "Type main to go back to the beginning."
+    puts "Type exit to quit the program."
+  end
+
+  def inner_menu
     puts "Type main to go back to the beginning."
     puts "Type exit to quit the program."
   end
@@ -110,6 +119,7 @@ class Veganni::CLI
     puts "Please select a month between 2008/12 and 2019/02 or type exit"
     bad_month = true
     while bad_month && !self.exit
+      print "> ".colorize(:red)
       input = gets.chomp
       if input.match?(/\d{4}\/\d{2}/)
         self.month = input
@@ -130,6 +140,7 @@ class Veganni::CLI
     puts "Please enter the number of the recipe you wish to get more details: (or type exit)"
     bad_number = true
     while bad_number && !self.exit
+      print "> ".colorize(:red)
       selection = gets.chomp
       puts SEPARATOR
       if selection.to_i > 0 && selection.to_i <= Recipe.all.size  #maybe can abstract it more?
