@@ -12,11 +12,19 @@ class Scraper
   def create_recipes
     self.scrape_main.each do |node|
       name = node.css(".entry-title").text
-      description = node.css(".entry-content p").text.split("\u00a0").first
       link = node.css("a.entry-title-link").attr("href").value
-      recipe = Recipe.new(name, description, link)
+      recipe = Recipe.new(name, link)
     end
     !Recipe.all.empty?
+  end
+
+  def add_description
+    self.recipe.description = self.scrape_description.first.children.first.text.gsub!("\u00a0", "")
+  end
+
+  def scrape_description
+    file = open(self.recipe.link)
+    Nokogiri::HTML(file).css(".entry-content p")
   end
 
   def add_ingredients
@@ -36,7 +44,15 @@ class Scraper
     doc.each do |step|
       self.recipe.prep_steps << step.css("div p").text
     end
-    self.recipe.prep_steps.select {|step| step != ""}
+    self.recipe.prep_steps.select! {|step| step != ""}
+  end
+
+  def add_prep_notes
+    doc = self.scrape_prep_notes
+    doc.each do |note|
+      self.recipe.prep_notes << note.text unless note.text.match?(/^\u00a0$/)
+    end
+    self.recipe.prep_notes.pop
   end
 
   def make_path(month)
@@ -63,6 +79,11 @@ class Scraper
   def scrape_prep
     file = open(self.recipe.link)
     Nokogiri::HTML(file).css(".wprm-recipe-instruction")
+  end
+
+  def scrape_prep_notes
+    file = open(self.recipe.link)
+    Nokogiri::HTML(file).css(".wprm-recipe-notes-container p")
   end
 
 

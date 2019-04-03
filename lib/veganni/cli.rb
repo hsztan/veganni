@@ -58,24 +58,46 @@ class Veganni::CLI
     scrapy = Scraper.scrape_by_recipe(self.recipe)
     scrapy.add_ingredients
     scrapy.add_prep
+    scrapy.add_prep_notes
   end
 
   def show_ingredients_and_prep
     self.get_ingredients_and_prep
     self.show_ingredients
     self.show_prep
+    self.show_prep_notes
   end
 
   def show_ingredients
-    puts "Showing ingredients"
+    puts "Ingredients:"
+    puts SEPARATOR
+    self.recipe.ingredients.each.with_index(1) do |ing, i|
+      print "#{i}. "
+      ing.each do |k, v|
+        print "#{v} " unless v == ""
+      end
+      puts ""
+    end
+    puts SEPARATOR
   end
 
   def show_prep
-    puts "Showing preparation"
+    puts "Instructions:"
+    puts SEPARATOR
+    self.recipe.prep_steps.each.with_index(1) {|step, i| puts "#{i}. #{step}"}
+    puts SEPARATOR
+  end
+
+  def show_prep_notes
+    puts "Notes:"
+    puts SEPARATOR
+    self.recipe.prep_notes.each.with_index(1) {|note, i| puts "#{i}. #{note}"}
+    puts SEPARATOR
   end
 
   def show_recipe_summary
     if !self.recipe.nil?
+      self.get_description
       puts "Name:"
       puts self.recipe.name
       puts "Description:"
@@ -109,6 +131,7 @@ class Veganni::CLI
     bad_number = true
     while bad_number && !self.exit
       selection = gets.chomp
+      puts SEPARATOR
       if selection.to_i > 0 && selection.to_i <= Recipe.all.size  #maybe can abstract it more?
         bad_number = false
         self.recipe = Recipe.all[selection.to_i - 1]
@@ -118,6 +141,10 @@ class Veganni::CLI
         puts "Please enter a valid selection:"
       end
     end
+  end
+
+  def get_description
+    self.recipe.description = Scraper.scrape_by_recipe(self.recipe).add_description
   end
 
   def get_month_recipes
