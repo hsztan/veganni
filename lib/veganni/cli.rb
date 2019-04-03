@@ -64,7 +64,7 @@ class Veganni::CLI
   end
 
   def get_ingredients_and_prep
-    scrapy = Scraper.scrape_by_recipe(self.recipe)
+    scrapy = Veganni::Scraper.scrape_by_recipe(self.recipe)
     scrapy.add_ingredients
     scrapy.add_prep
     scrapy.add_prep_notes
@@ -143,9 +143,9 @@ class Veganni::CLI
       print "> ".colorize(:red)
       selection = gets.chomp
       puts SEPARATOR
-      if selection.to_i > 0 && selection.to_i <= Recipe.all.size  #maybe can abstract it more?
+      if selection.to_i > 0 && selection.to_i <= Veganni::Recipe.all.size  #maybe can abstract it more?
         bad_number = false
-        self.recipe = Recipe.all[selection.to_i - 1]
+        self.recipe = Veganni::Recipe.all[selection.to_i - 1]
       elsif selection == "exit"
         self.exit = true
       else
@@ -155,13 +155,13 @@ class Veganni::CLI
   end
 
   def get_description
-    self.recipe.description = Scraper.scrape_by_recipe(self.recipe).add_description
+    self.recipe.description = Veganni::Scraper.scrape_by_recipe(self.recipe).add_description
   end
 
   def get_month_recipes
-    Recipe.reset_all
-    Scraper.create_by_month(self.month).create_recipes
-    Recipe.all.each.with_index(1) do |recipe, index|
+    Veganni::Recipe.reset_all
+    Veganni::Scraper.create_by_month(self.month).create_recipes
+    Veganni::Recipe.all.each.with_index(1) do |recipe, index|
       puts "#{index}. #{recipe.name}"
     end
   end

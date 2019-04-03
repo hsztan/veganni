@@ -1,5 +1,5 @@
 
-class Scraper
+class Veganni::Scraper
   attr_accessor :path, :recipe
 
   BASE_PATH = "https://www.veganricha.com/"
@@ -13,9 +13,9 @@ class Scraper
     self.scrape_main.each do |node|
       name = node.css(".entry-title").text
       link = node.css("a.entry-title-link").attr("href").value
-      recipe = Recipe.new(name, link)
+      recipe = Veganni::Recipe.new(name, link)
     end
-    !Recipe.all.empty?
+    !Veganni::Recipe.all.empty?
   end
 
   def add_description

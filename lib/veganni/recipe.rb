@@ -1,5 +1,5 @@
 
-class Recipe
+class Veganni::Recipe
   attr_accessor :name, :description, :link, :ingredients, :prep_steps, :prep_notes
 
   @@all = []
