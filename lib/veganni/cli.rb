@@ -53,9 +53,9 @@ class Veganni::CLI
   end
 
   def menu
-    puts "Type prep to get cooking!"
-    puts "Type main to go back to the beginning."
-    puts "Type exit to quit the program."
+    puts "Type 'prep' to get cooking!"
+    puts "Type 'main' to go back to the beginning."
+    puts "Type 'exit' to quit the program."
   end
 
   def inner_menu
