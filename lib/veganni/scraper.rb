@@ -5,8 +5,12 @@ class Veganni::Scraper
   BASE_PATH = "https://www.veganricha.com/"
 
   def scrape_main
-    file = open(@path)
-    doc = Nokogiri::HTML(file).css("article")
+    begin
+      file = open(@path)
+      doc = Nokogiri::HTML(file).css("article")
+    rescue
+      puts "Cannot open URL!"
+    end
   end
 
   def create_recipes
@@ -14,7 +18,7 @@ class Veganni::Scraper
       name = node.css(".entry-title").text
       link = node.css("a.entry-title-link").attr("href").value
       recipe = Veganni::Recipe.new(name, link)
-    end
+    end unless self.scrape_main.nil?
     !Veganni::Recipe.all.empty?
   end
 
@@ -23,8 +27,12 @@ class Veganni::Scraper
   end
 
   def scrape_description
-    file = open(self.recipe.link)
-    Nokogiri::HTML(file).css(".entry-content p")
+    begin
+      file = open(self.recipe.link)
+      Nokogiri::HTML(file).css(".entry-content p")
+    rescue
+      puts "Cannot open URL!"
+    end
   end
 
   def add_ingredients
@@ -72,19 +80,30 @@ class Veganni::Scraper
   end
 
   def scrape_ingredients
-    file = open(self.recipe.link)
-    Nokogiri::HTML(file).css(".wprm-recipe-container")
+    begin
+      file = open(self.recipe.link)
+      Nokogiri::HTML(file).css(".wprm-recipe-container")
+    rescue
+      puts "Cannot open URL!"
+    end
   end
 
   def scrape_prep
-    file = open(self.recipe.link)
-    Nokogiri::HTML(file).css(".wprm-recipe-instruction")
+    begin
+      file = open(self.recipe.link)
+      Nokogiri::HTML(file).css(".wprm-recipe-instruction")
+    rescue
+      puts "Cannot open URL!"
+    end
   end
 
   def scrape_prep_notes
-    file = open(self.recipe.link)
-    Nokogiri::HTML(file).css(".wprm-recipe-notes-container p")
+    begin
+      file = open(self.recipe.link)
+      Nokogiri::HTML(file).css(".wprm-recipe-notes-container p")
+    rescue
+      puts "Cannot open URL!"
+    end
   end
-
 
 end

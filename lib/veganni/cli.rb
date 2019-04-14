@@ -19,9 +19,8 @@ class Veganni::CLI
     puts SEPARATOR
     self.list_month_recipes
     puts SEPARATOR
-    self.select_recipe unless exit
+    self.select_recipe unless (exit || Veganni::Recipe.all.empty?)
     self.show_recipe_summary unless exit
-
     while !self.exit
       puts SEPARATOR
       inner_menu_flag ? self.inner_menu : self.menu
@@ -32,12 +31,14 @@ class Veganni::CLI
         puts SEPARATOR
         self.list_month_recipes
         puts SEPARATOR
-        self.select_recipe
-        self.show_recipe_summary
+        self.select_recipe unless (exit || Veganni::Recipe.all.empty?)
+        self.show_recipe_summary unless (exit || Veganni::Recipe.all.empty?)
       when "prep"
-        puts SEPARATOR
-        self.show_ingredients_and_prep
-        inner_menu_flag = true
+        if !(exit || Veganni::Recipe.all.empty?)
+          puts SEPARATOR
+          self.show_ingredients_and_prep
+          inner_menu_flag = true
+        end
       when "exit"
         self.exit = true
       end
