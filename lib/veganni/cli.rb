@@ -19,7 +19,7 @@ class Veganni::CLI
     puts SEPARATOR
     self.list_month_recipes
     puts SEPARATOR
-    self.select_recipe unless Veganni::Recipe.all.empty?
+    self.select_recipe
     self.show_recipe_summary
     while !self.exit
       puts SEPARATOR
@@ -31,8 +31,9 @@ class Veganni::CLI
         puts SEPARATOR
         self.list_month_recipes
         puts SEPARATOR
-        self.select_recipe unless (exit || Veganni::Recipe.all.empty?)
-        self.show_recipe_summary unless (exit || Veganni::Recipe.all.empty?)
+        self.recipe = nil
+        self.select_recipe unless exit
+        self.show_recipe_summary unless exit
       when "prep"
         if !(exit || Veganni::Recipe.all.empty?)
           puts SEPARATOR
@@ -122,7 +123,7 @@ class Veganni::CLI
     while bad_month && !self.exit
       print "> ".colorize(:red)
       input = gets.chomp
-      if input.match?(/\d{4}\/\d{2}/)
+      if input.match?(/20[01][0-9]\/[01]\d/)
         self.month = input
         puts "Recipes for this month are:"
         puts SEPARATOR
@@ -137,20 +138,22 @@ class Veganni::CLI
   end
 
   def select_recipe  #sets recipe to an instance
-    selection = nil
-    puts "Please enter the number of the recipe you wish to get more details: (or type exit)"
-    bad_number = true
-    while bad_number && !self.exit
-      print "> ".colorize(:red)
-      selection = gets.chomp
-      puts SEPARATOR
-      if selection.to_i > 0 && selection.to_i <= Veganni::Recipe.all.size  #maybe can abstract it more?
-        bad_number = false
-        self.recipe = Veganni::Recipe.all[selection.to_i - 1]
-      elsif selection == "exit"
-        self.exit = true
-      else
-        puts "Please enter a valid selection:"
+    if !Veganni::Recipe.all.empty?
+      selection = nil
+      puts "Please enter the number of the recipe you wish to get more details: (or type exit)"
+      bad_number = true
+      while bad_number && !self.exit
+        print "> ".colorize(:red)
+        selection = gets.chomp
+        puts SEPARATOR
+        if selection.to_i > 0 && selection.to_i <= Veganni::Recipe.all.size  #maybe can abstract it more?
+          bad_number = false
+          self.recipe = Veganni::Recipe.all[selection.to_i - 1]
+        elsif selection == "exit"
+          self.exit = true
+        else
+          puts "Please enter a valid selection:"
+        end
       end
     end
   end
