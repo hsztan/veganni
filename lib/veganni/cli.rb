@@ -19,8 +19,8 @@ class Veganni::CLI
     puts SEPARATOR
     self.list_month_recipes
     puts SEPARATOR
-    self.select_recipe unless (exit || Veganni::Recipe.all.empty?)
-    self.show_recipe_summary unless exit
+    self.select_recipe unless Veganni::Recipe.all.empty?
+    self.show_recipe_summary
     while !self.exit
       puts SEPARATOR
       inner_menu_flag ? self.inner_menu : self.menu
