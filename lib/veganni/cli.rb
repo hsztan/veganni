@@ -118,12 +118,12 @@ class Veganni::CLI
 
   def list_month_recipes
     self.month = nil
-    puts "Please select a month between 2008/12 and 2019/02 or type exit"
+    puts "Please select a month between 2013/01 and 2019/02 or type exit"
     bad_month = true
     while bad_month && !self.exit
       print "> ".colorize(:red)
       input = gets.chomp
-      if input.match?(/20[01][0-9]\/[01]\d/)
+      if input.match?(/201[3-9]\/[01]\d/)
         self.month = input
         puts "Recipes for this month are:"
         puts SEPARATOR
